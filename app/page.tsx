@@ -21,6 +21,14 @@ const objects = [
   { name:"Constellations", tag:"SKY MAP", value:"88", unit:"official regions", image:"/object-constellation-transparent.png", note:"Recognised patterns that divide the entire celestial sphere." },
   { name:"Satellites", tag:"LOW EARTH ORBIT", value:"11.7K+", unit:"active spacecraft", image:"/object-satellite-transparent.png", note:"Working machines observing, connecting and mapping our planet." },
 ];
+const asteroidNames=["Ceres","Vesta","Pallas","Hygiea"];
+const constellations=["Orion","Ursa Major","Cassiopeia","Scorpius","Leo"];
+const satelliteData=[
+ {name:"ISS",mission:"Orbital research laboratory",alt:"408 km",speed:"7.66 km/s"},
+ {name:"Hubble",mission:"Deep-space observatory",alt:"525 km",speed:"7.59 km/s"},
+ {name:"GPS III",mission:"Positioning and timing",alt:"20,200 km",speed:"3.87 km/s"},
+ {name:"Sentinel",mission:"Earth observation",alt:"786 km",speed:"7.46 km/s"},
+];
 
 function Planet({ planet, index }: { planet: typeof planets[number]; index:number }) {
   return <article className="planet-card">
@@ -35,6 +43,7 @@ function Planet({ planet, index }: { planet: typeof planets[number]; index:numbe
 export default function Home() {
   const root=useRef<HTMLElement>(null);
   const [sound,setSound]=useState(false), [guideOpen,setGuideOpen]=useState(true), [active,setActive]=useState(0);
+  const [activeConstellation,setActiveConstellation]=useState(0),[activeSatellite,setActiveSatellite]=useState(0);
   useLayoutEffect(()=>{gsap.registerPlugin(ScrollTrigger);const ctx=gsap.context(()=>{
     gsap.to(".hero-image",{scale:1.42,xPercent:-3,yPercent:3,ease:"none",scrollTrigger:{trigger:".hero-scroll",start:"top top",end:"bottom bottom",scrub:1}});
     gsap.to(".hero-copy",{y:-90,opacity:0,ease:"none",scrollTrigger:{trigger:".hero-scroll",start:"top top",end:"28% top",scrub:1}});
@@ -44,6 +53,10 @@ export default function Home() {
     gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach(el=>gsap.from(el,{y:80,opacity:0,duration:1.1,scrollTrigger:{trigger:el,start:"top 82%"}}));
     gsap.utils.toArray<HTMLElement>(".space-asset").forEach((el,i)=>gsap.to(el,{rotation:i%2?18:-18,y:i%2?-45:45,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:1.2}}));
     gsap.utils.toArray<HTMLElement>(".planet-image").forEach((el,i)=>{gsap.to(el,{rotation:i%2?32:-32,ease:"none",scrollTrigger:{trigger:".planet-scroll",start:"top top",end:"bottom bottom",scrub:1}});const enter=()=>gsap.to(el,{scale:1.1,duration:.6,ease:"power3.out"});const leave=()=>gsap.to(el,{scale:1,duration:.6,ease:"power3.out"});el.addEventListener("mouseenter",enter);el.addEventListener("mouseleave",leave)});
+    gsap.utils.toArray<HTMLElement>(".asteroid-layer").forEach((el,i)=>gsap.to(el,{xPercent:i%2?28:-22,yPercent:i*8-8,rotation:i%2?70:-55,ease:"none",scrollTrigger:{trigger:".asteroid-belt",start:"top bottom",end:"bottom top",scrub:1+i*.25}}));
+    gsap.fromTo(".galaxy-core",{scale:.18,opacity:.3},{scale:1.2,opacity:1,ease:"none",scrollTrigger:{trigger:".galaxy-explorer",start:"top top",end:"bottom bottom",scrub:1}});
+    gsap.to(".orbit-earth",{rotation:70,ease:"none",scrollTrigger:{trigger:".satellite-orbit",start:"top bottom",end:"bottom top",scrub:1.2}});
+    gsap.utils.toArray<HTMLElement>(".journey-step").forEach((el,i)=>gsap.from(el,{y:45,opacity:0,duration:.7,delay:i*.05,scrollTrigger:{trigger:el,start:"top 88%"}}));
   },root);return()=>ctx.revert()},[]);
   const hover=(e:React.MouseEvent<HTMLElement>,enter:boolean)=>gsap.to(e.currentTarget.querySelector("img"),{rotation:enter?8:0,scale:enter?1.08:1,duration:.7,ease:"power3.out"});
   return <main ref={root}>
@@ -63,6 +76,18 @@ export default function Home() {
       <div className="altimeter"><span>DESTINATION</span><b>384,400</b><small>KM</small></div>
     </div></section>
 
+    <section className="asteroid-belt" id="asteroids"><div className="belt-copy gsap-reveal"><p className="eyebrow"><i/>REGION 02 · ASTEROID BELT</p><h2>Through the<br/><span>ancient debris.</span></h2><p>Fragments left behind 4.6 billion years ago move on separate planes and at separate speeds.</p></div>
+      {[0,1,2].map(layer=><div className={`asteroid-layer layer-${layer}`} key={layer}>{[0,1,2,3].map((_,i)=><img key={i} src="/object-asteroid-transparent.png" alt="" style={{left:`${8+i*27-(layer*4)}%`,top:`${14+((i+layer)%3)*27}%`,width:`${130+layer*70}px`}}/>)}</div>)}
+      <div className="asteroid-index">{asteroidNames.map((name,i)=><button key={name}><span>0{i+1}</span><b>{name}</b><small>{i===0?"Dwarf planet":i===1?"Brightest asteroid":i===2?"High-inclination orbit":"Carbon-rich body"}</small></button>)}</div>
+      <img className="belt-mascot" src="/astronaut.png" alt="Mio navigating the asteroid belt"/>
+    </section>
+
+    <section className="galaxy-explorer"><div className="galaxy-sticky"><div className="galaxy-copy"><p className="eyebrow"><i/>SCALE TRANSITION</p><h2>One system.<br/><span>A much larger home.</span></h2><div><span>SOLAR SYSTEM</span><span>MILKY WAY</span><span>LOCAL GROUP</span></div></div><img className="galaxy-core" src="/object-galaxy-transparent.png" alt="The Milky Way galaxy"/><span className="solar-marker"><i/>YOU ARE HERE</span><dl><div><dt>DIAMETER</dt><dd>100,000 light-years</dd></div><div><dt>ESTIMATED STARS</dt><dd>100–400 billion</dd></div></dl></div></section>
+
+    <section className="constellation-explorer"><div className="constellation-copy gsap-reveal"><p className="eyebrow"><i/>CELESTIAL NAVIGATION</p><h2>Connect the<br/><span>night sky.</span></h2><p>Choose a constellation to redraw the pattern from our point of view on Earth.</p></div><div className="constellation-stage"><img key={activeConstellation} src="/object-constellation-transparent.png" alt={`${constellations[activeConstellation]} constellation`} style={{transform:`rotate(${activeConstellation*34}deg) scale(${1-activeConstellation*.035})`}}/><span className="constellation-name">{constellations[activeConstellation]}</span></div><div className="constellation-menu">{constellations.map((name,i)=><button className={activeConstellation===i?"active":""} key={name} onClick={()=>setActiveConstellation(i)}><span>0{i+1}</span>{name}</button>)}</div><img className="constellation-mascot" src="/astronaut.png" alt="Mio tracing constellations"/></section>
+
+    <section className="satellite-orbit"><div className="satellite-copy gsap-reveal"><p className="eyebrow"><i/>EARTH ORBIT · LIVE</p><h2>Machines that<br/><span>never stand still.</span></h2><p>{satelliteData[activeSatellite].mission}</p><dl><div><dt>ALTITUDE</dt><dd>{satelliteData[activeSatellite].alt}</dd></div><div><dt>ORBITAL SPEED</dt><dd>{satelliteData[activeSatellite].speed}</dd></div></dl></div><div className="orbit-stage"><span className="orbit-ring ring-one"/><span className="orbit-ring ring-two"/><img className="orbit-earth" src="/planet-earth-transparent.png" alt="Rotating Earth"/>{satelliteData.map((sat,i)=><button key={sat.name} className={`orbiting-satellite sat-${i} ${activeSatellite===i?"active":""}`} onClick={()=>setActiveSatellite(i)}><img src="/object-satellite-transparent.png" alt=""/><span>{sat.name}</span></button>)}</div></section>
+
     <section id="planets" className="planet-scroll"><div className="planet-sticky">
       <div className="section-head"><p className="eyebrow"><i/>SOLAR SYSTEM / 01—08</p><h2>Eight worlds.<br/><span>One system.</span></h2><small>SCROLL TO TRAVEL →</small></div><div className="orbit-line"/>
       <div className="planet-track">{planets.map((p,i)=><Planet key={p.name} planet={p} index={i}/>)}</div><div className="pan-progress"><span/></div>
@@ -75,7 +100,8 @@ export default function Home() {
       <aside className="signal-detail"><span>LIVE OBJECT</span><b>{objects[active].name}</b><p>Telemetry received · Signal strength 98.7%</p><div><i/></div></aside>
     </section>
 
-    <section className="finale"><div className="final-orbit"><span/><span/><span/></div><img src="/astronaut.png" alt="Mio, the astronaut field guide"/><div><p className="eyebrow"><i/>MISSION COMPLETE</p><h2>The next discovery<br/>starts <span>with you.</span></h2><a href="#top">Restart journey <span>↑</span></a></div></section>
+    <section className="journey-log"><p className="eyebrow"><i/>YOUR FLIGHT LOG</p><div>{["Earth","Planets","Asteroids","Galaxy","Constellations","Satellites"].map((step,i)=><span className="journey-step" key={step}><b>0{i+1}</b>{step}<i>→</i></span>)}</div></section>
+    <section className="finale"><div className="final-orbit"><span/><span/><span/></div><img src="/astronaut.png" alt="Mio, the astronaut field guide"/><div><p className="eyebrow"><i/>EXPLORATION COMPLETE</p><h2>You crossed<br/><span>the known universe.</span></h2><div className="final-actions"><a href="#top">Explore again <span>↑</span></a><a href="/orbit-data">My space <span>→</span></a></div></div></section>
     <button className={`mascot-guide ${guideOpen?"open":""}`} onClick={()=>setGuideOpen(!guideOpen)} aria-label="Open Mio's field guide"><img src="/astronaut.png" alt=""/>{guideOpen&&<span><b>Hi, I’m Mio.</b>Take it slowly. The view changes as you scroll.<i>×</i></span>}</button>
     <footer><a className="brand" href="#top"><span className="brand-mark">C</span>COSMOS <b>/ AR</b></a><p>A FIELD GUIDE TO THE OBSERVABLE UNIVERSE.</p><small>© 2026 COSMOS AR LAB</small></footer>
   </main>;
