@@ -1,0 +1,8 @@
+import SpaceDetail from "../components/SpaceDetail";
+const items=[
+{eyebrow:"INNER PLANET",title:"Mercury",intro:"The smallest planet and the fastest traveller around the Sun.",image:"/planet-mercury-transparent.png",facts:[["DAY","59 Earth days"],["DISTANCE","57.9M km"]] as Array<[string,string]>,body:"With almost no atmosphere to hold heat, Mercury moves between severe temperature extremes."},
+{eyebrow:"INNER PLANET",title:"Venus",intro:"A world wrapped in reflective clouds and crushing pressure.",image:"/planet-venus-transparent.png",facts:[["DAY","243 Earth days"],["PRESSURE","92 bar"]] as Array<[string,string]>,body:"Venus rotates backwards and slower than any other planet, while its surface remains hot enough to melt lead."},
+{eyebrow:"OCEAN PLANET",title:"Earth",intro:"A dynamic planet shaped by water, plate tectonics and life.",image:"/planet-earth-transparent.png",facts:[["AGE","4.54B years"],["WATER","71% surface"]] as Array<[string,string]>,body:"A protective magnetic field and active atmosphere maintain the only biosphere we currently know."},
+{eyebrow:"OUTER PLANET",title:"Saturn",intro:"The most extensive ring system in the Solar System.",image:"/planet-saturn-transparent.png",facts:[["MOONS","146 confirmed"],["RINGS","7 groups"]] as Array<[string,string]>,body:"Saturn is less dense than water. Its rings are thin, bright discs formed from countless pieces of ice and rock."}
+];
+export default function Page(){return <SpaceDetail section="PLANETARY ARCHIVE" title="Worlds in motion." lede="Four close studies from a planetary system formed 4.6 billion years ago." items={items}/>}
