@@ -7,6 +7,7 @@ import SiteFooter from "./SiteFooter";
 import { animateContent } from "./contentMotion";
 
 type Item={eyebrow:string;title:string;intro:string;image:string;facts:Array<[string,string]>;body:string};
+const slugify=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
 export default function SpaceDetail({section,title,lede,items}:{section:string;title:string;lede:string;items:Item[]}){
  const root=useRef<HTMLElement>(null);
  useLayoutEffect(()=>{gsap.registerPlugin(ScrollTrigger);const ctx=gsap.context(()=>{
@@ -18,7 +19,7 @@ export default function SpaceDetail({section,title,lede,items}:{section:string;t
  const hover=(e:React.MouseEvent<HTMLDivElement>,on:boolean)=>gsap.to(e.currentTarget.querySelector("img"),{rotation:on?12:0,scale:on?1.07:1,duration:.8,ease:"power3.out"});
  return <main ref={root} className="subpage"><header className="topbar solid"><a className="brand" href="/"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></a><Navigation/><a className="back-home" href="/">← Field guide</a></header>
    <section className="sub-hero"><p className="eyebrow"><i/>{section}</p><h1>{title}</h1><p>{lede}</p><span>SCROLL TO EXPLORE ↓</span></section>
-   <section className="detail-list">{items.map((item,i)=><article className={`detail-row ${i%2?"reverse":""}`} key={item.title}>
+   <section className="detail-list">{items.map((item,i)=><article id={slugify(item.title)} className={`detail-row ${i%2?"reverse":""}`} key={item.title}>
      <div className="detail-visual" onMouseEnter={e=>hover(e,true)} onMouseLeave={e=>hover(e,false)}><span>{String(i+1).padStart(2,"0")}</span><img className="detail-asset" src={item.image} alt={`Transparent photorealistic 3D render of ${item.title}`}/></div>
      <div className="detail-copy"><p className="eyebrow"><i/>{item.eyebrow}</p><h2>{item.title}</h2><p>{item.intro}</p><dl>{item.facts.map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><small>{item.body}</small></div>
  </article>)}</section><SiteFooter/>

@@ -29,6 +29,14 @@ const objects = [
 ];
 const asteroidNames=["Ceres","Vesta","Pallas","Hygiea"];
 const constellations=["Orion","Ursa Major","Cassiopeia","Scorpius","Leo"];
+const flightLog=[
+  {name:"Earth",image:"/flight-icon-earth.png",href:"/planets#earth"},
+  {name:"Planets",image:"/flight-icon-planets.png",href:"/planets"},
+  {name:"Asteroids",image:"/flight-icon-asteroids.png",href:"/deep-space#ceres"},
+  {name:"Galaxy",image:"/flight-icon-galaxy.png",href:"/deep-space#the-milky-way"},
+  {name:"Constellations",image:"/flight-icon-constellations.png",href:"/deep-space#orion"},
+  {name:"Satellites",image:"/flight-icon-satellites.png",href:"/orbit-data"},
+];
 const constellationFacts=[
  "The Hunter is traced by three brilliant belt stars across the celestial equator.",
  "The Great Bear circles the northern sky and contains the familiar Big Dipper.",
@@ -246,7 +254,7 @@ export default function Home() {
       <aside className="signal-detail"><span>LIVE OBJECT</span><b>{objects[active].name}</b><p>Telemetry received · Signal strength 98.7%</p><div><i/></div></aside>
     </section>
 
-    <section className="journey-log"><p className="eyebrow"><i/>YOUR FLIGHT LOG</p><div>{["Earth","Planets","Asteroids","Galaxy","Constellations","Satellites"].map((step,i)=><span className="journey-step" key={step}><b>0{i+1}</b>{step}<i>→</i></span>)}</div></section>
+    <section className="journey-log"><p className="eyebrow"><i/>YOUR FLIGHT LOG</p><div>{flightLog.map((step,i)=><a className="journey-step" href={step.href} key={step.name} aria-label={`Explore ${step.name}`}><b>0{i+1}</b><img src={step.image} alt=""/><span>{step.name}</span><i aria-hidden="true">→</i></a>)}</div></section>
     <section className="finale"><div className="final-orbit mini-system" aria-hidden="true"><img className="mini-sun" src="/sun-3d-transparent.png" alt=""/><span className="mini-orbit orbit-a"><img src="/planet-mercury-transparent.png" alt=""/></span><span className="mini-orbit orbit-b"><img src="/planet-earth-transparent.png" alt=""/></span><span className="mini-orbit orbit-c"><img src="/planet-mars-transparent.png" alt=""/></span><span className="mini-orbit orbit-d"><img src="/planet-neptune-transparent.png" alt=""/></span></div><div className="finale-mascot-wrap"><img className="finale-mascot" src="/astronaut-complete.png" alt="Mio celebrating the completed journey"/></div><div><p className="eyebrow"><i/>EXPLORATION COMPLETE</p><h2>You crossed<br/><span>the known universe.</span></h2><div className="final-actions"><a href="#top">Explore again <span>↑</span></a><a href="/orbit-data">My space <span>→</span></a></div></div></section>
     <aside className={`mascot-guide ${guideOpen?"open":""}`}><button className="mascot-trigger" onClick={()=>setGuideOpen(!guideOpen)} aria-label={guideOpen?"Close Mio chatbot":"Open Mio chatbot"}><img src="/astronaut.png" alt=""/></button>{guideOpen&&<div className="mio-chat"><button className="chat-close" onClick={()=>setGuideOpen(false)} aria-label="Close chatbot">×</button><b>MIO / SPACE GUIDE</b><div className="chat-log" aria-live="polite">{chatMessages.map((message,i)=><p className={message.from} key={i}>{message.text}</p>)}</div><div className="chat-suggestions"><button onClick={()=>askMio("Tell me about planets")}>Planets</button><button onClick={()=>askMio("How is observing weather?")}>Weather</button><button onClick={()=>askMio("Tell me about satellites")}>Satellites</button></div><form onSubmit={e=>{e.preventDefault();askMio(chatInput)}}><input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Ask Mio about space…" aria-label="Message Mio"/><button type="submit" aria-label="Send message">→</button></form></div>}</aside>
     <SiteFooter/>
