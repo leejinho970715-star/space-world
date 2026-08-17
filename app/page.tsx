@@ -223,6 +223,7 @@ export default function Home() {
       <div className="section-head"><p className="eyebrow"><i/>SOLAR SYSTEM / 01—08</p><h2>Eight worlds.<br/><span>One system.</span></h2><small>SCROLL TO TRAVEL →</small></div><div className="orbit-line"/>
       <div className="planet-track panorama-track">{planets.map((p,i)=><Planet key={p.name} planet={p} index={i} activeIndex={activePlanet} onSelect={()=>setActivePlanet(i)}/>)}</div>
       <div className="planet-panorama-index" aria-live="polite"><b>{String(activePlanet+1).padStart(2,"0")}</b><span>/ 08</span><small>{planets[activePlanet].name}</small></div>
+      <div className="planet-panorama-controls" aria-label="Planet carousel controls"><button type="button" onClick={()=>setActivePlanet((activePlanet-1+planets.length)%planets.length)} aria-label="Show previous planet">←</button><button type="button" onClick={()=>setActivePlanet((activePlanet+1)%planets.length)} aria-label="Show next planet">→</button></div>
     </div></section>
 
     <section id="deep-space" className="deep-space"><div className="deep-title gsap-reveal"><p className="eyebrow"><i/>BEYOND THE PLANETS</p><h2>Explore what lives<br/><span>between the light.</span></h2><p className="deep-intro">A closer look at the objects, structures and machines that define our place in space.</p></div>
