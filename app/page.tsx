@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navigation from "./components/Navigation";
 import SiteFooter from "./components/SiteFooter";
+import IntroExperience from "./components/IntroExperience";
 import { animateContent } from "./components/contentMotion";
 
 const planets = [
@@ -195,6 +196,7 @@ export default function Home() {
   const endPlanetDrag=(e:React.PointerEvent<HTMLDivElement>)=>{if(!planetDrag.current.active)return;planetDrag.current.active=false;e.currentTarget.classList.remove("dragging");if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId)};
   const askMio=(question:string)=>{const q=question.trim();if(!q)return;const lower=q.toLowerCase();let answer="Try asking me about planets, galaxies, constellations, satellites, asteroids, or observing conditions.";if(lower.includes("planet"))answer="Eight planets orbit our Sun. Open the Planets chapter to compare their temperatures, sizes, and orbital periods.";else if(lower.includes("galaxy")||lower.includes("milky"))answer="The Milky Way is a barred spiral galaxy roughly 100,000 light-years wide. Our Solar System sits in the Orion Arm.";else if(lower.includes("satellite")||lower.includes("orbit"))answer="Space World tracks research, weather, navigation, and communications satellites across several orbital regions.";else if(lower.includes("constellation"))answer="Constellations are 88 officially recognised regions that help us map and navigate the night sky.";else if(lower.includes("asteroid"))answer="Asteroids are rocky remnants of Solar System formation. Most orbit between Mars and Jupiter.";else if(lower.includes("weather")||lower.includes("observe"))answer="For clearer observing, look for low cloud cover, stable seeing, good transparency, light wind, and limited moonlight.";setChatMessages(messages=>[...messages,{from:"user",text:q},{from:"mio",text:answer}]);setChatInput("");};
   return <main ref={root}>
+    <IntroExperience/>
     <header className="topbar"><a className="brand" href="#top" aria-label="Space World home"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></a>
       <Navigation/>
     </header>
