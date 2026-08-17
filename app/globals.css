@@ -218,4 +218,7 @@ html,body{overflow-x:clip}main{overflow:visible!important;max-width:none}.ar-pag
 
 /* Consistent breathing room prevents adjacent main-page interactions competing. */
 main:not(.ar-page):not(.subpage){background-color:#02040a;background-image:linear-gradient(rgba(2,4,10,.78),rgba(2,4,10,.78)),url('/starfield-background.png');background-size:cover;background-position:center;background-repeat:no-repeat}
-main:not(.ar-page):not(.subpage)>section+section{margin-top:300px!important}
+main:not(.ar-page):not(.subpage)>section+section{margin-top:0!important;padding-top:300px!important;box-sizing:content-box}
+
+/* Preserve 8K detail by painting each subpage viewport-sized chapter separately. */
+.subpage{background:#02040a!important}.subpage>.sub-hero,.subpage .detail-row{background-color:#02040a!important;background-image:linear-gradient(180deg,rgba(2,4,10,.72),rgba(2,4,10,.84)),url('/space-panorama-crisp-8k.webp')!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}.subpage>.detail-list{background:#02040a!important}
