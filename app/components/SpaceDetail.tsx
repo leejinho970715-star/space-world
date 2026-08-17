@@ -2,7 +2,6 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
 import Navigation from "./Navigation";
 import SiteFooter from "./SiteFooter";
 import { animateContent } from "./contentMotion";
@@ -17,7 +16,7 @@ export default function SpaceDetail({section,title,lede,items}:{section:string;t
    animateContent(root.current!);
  },root);return()=>ctx.revert()},[]);
  const hover=(e:React.MouseEvent<HTMLDivElement>,on:boolean)=>gsap.to(e.currentTarget.querySelector("img"),{rotation:on?12:0,scale:on?1.07:1,duration:.8,ease:"power3.out"});
- return <main ref={root} className="subpage"><header className="topbar solid"><Link className="brand" href="/"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></Link><Navigation/><Link className="back-home" href="/">← Field guide</Link></header>
+ return <main ref={root} className="subpage"><header className="topbar solid"><a className="brand" href="/"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></a><Navigation/><a className="back-home" href="/">← Field guide</a></header>
    <section className="sub-hero"><p className="eyebrow"><i/>{section}</p><h1>{title}</h1><p>{lede}</p><span>SCROLL TO EXPLORE ↓</span></section>
    <section className="detail-list">{items.map((item,i)=><article className={`detail-row ${i%2?"reverse":""}`} key={item.title}>
      <div className="detail-visual" onMouseEnter={e=>hover(e,true)} onMouseLeave={e=>hover(e,false)}><span>{String(i+1).padStart(2,"0")}</span><img className="detail-asset" src={item.image} alt={`Transparent photorealistic 3D render of ${item.title}`}/></div>

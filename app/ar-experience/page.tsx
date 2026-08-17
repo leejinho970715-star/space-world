@@ -3,7 +3,6 @@
 export const dynamic = "force-static";
 
 import {useRef,useState,type CSSProperties} from "react";
-import Link from "next/link";
 import Navigation from "../components/Navigation";
 import SiteFooter from "../components/SiteFooter";
 
@@ -24,7 +23,7 @@ export default function ARExperience(){
   const zoomOut=()=>setZoom(value=>clamp(Number((value-.12).toFixed(2)),MIN_ZOOM,MAX_ZOOM));
 
   return <main className="ar-page">
-    <header className="topbar ar-topbar"><Link className="brand" href="/"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></Link><Navigation/><Link className="back-home" href="/">← Field guide</Link></header>
+    <header className="topbar ar-topbar"><a className="brand" href="/"><img className="brand-logo" src="/logo-cosmos.png" alt=""/>SPACE <b>WORLD</b></a><Navigation/><a className="back-home" href="/">← Field guide</a></header>
     <section className={`ar-viewer ${dragging.current?"dragging":""}`} tabIndex={0} aria-label="Interactive 360 degree view of deep space"
       onPointerDown={event=>{dragging.current=true;last.current={x:event.clientX,y:event.clientY};event.currentTarget.setPointerCapture(event.pointerId);setIntro(false)}}
       onPointerMove={event=>{if(dragging.current){move(event.clientX-last.current.x,event.clientY-last.current.y);last.current={x:event.clientX,y:event.clientY}}}}

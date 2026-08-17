@@ -5,7 +5,6 @@ export const dynamic = "force-static";
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
 import Navigation from "./components/Navigation";
 import SiteFooter from "./components/SiteFooter";
 import { animateContent } from "./components/contentMotion";
@@ -209,11 +208,11 @@ export default function Home() {
 
     <section className="asteroid-belt" id="asteroids"><div className="cinematic-sticky"><div className="belt-copy gsap-reveal"><p className="eyebrow"><i/>REGION 02 · ASTEROID BELT</p><h2>Through the<br/><span>ancient debris.</span></h2><p>Fragments left behind 4.6 billion years ago move on separate planes and at separate speeds.</p></div>
       {[0,1,2].map(layer=><div className={`asteroid-layer layer-${layer}`} key={layer}>{[0,1,2,3].map((_,i)=><img key={i} src="/object-asteroid-transparent.png" alt="" style={{left:`${8+i*27-(layer*4)}%`,top:`${14+((i+layer)%3)*27}%`,width:`${130+layer*70}px`}}/>)}</div>)}
-      <div className="asteroid-index">{asteroidNames.map((name,i)=><Link href="/deep-space" key={name} aria-label={`Explore ${name}`}><span>0{i+1}</span><b>{name}</b><small>{i===0?"Dwarf planet":i===1?"Brightest asteroid":i===2?"High-inclination orbit":"Carbon-rich body"}</small></Link>)}</div>
+      <div className="asteroid-index">{asteroidNames.map((name,i)=><a href="/deep-space" key={name} aria-label={`Explore ${name}`}><span>0{i+1}</span><b>{name}</b><small>{i===0?"Dwarf planet":i===1?"Brightest asteroid":i===2?"High-inclination orbit":"Carbon-rich body"}</small></a>)}</div>
       <img className="belt-mascot" src="/astronaut-flight.png" alt="Mio flying through the asteroid belt"/></div>
     </section>
 
-    <section className="spacecraft-showcase"><div className="spacecraft-heading"><p className="eyebrow"><i/>NASA SPACECRAFT ARCHIVE</p><h2>Machines built<br/><span>to cross the impossible.</span></h2><p>Four spacecraft, four radically different ways of extending human reach.</p><Link href="/spacecraft">Explore the fleet →</Link></div><div className="spacecraft-grid">{nasaSpacecraft.map((craft,i)=><Link href="/spacecraft" className="spacecraft-card" data-side={i%2?"right":"left"} key={craft.name}><small>0{i+1} · {craft.type}</small><img src={craft.image} alt={`Photorealistic 3D render of NASA ${craft.name}`}/><h3>{craft.name}</h3><p>{craft.note}</p></Link>)}</div></section>
+    <section className="spacecraft-showcase"><div className="spacecraft-heading"><p className="eyebrow"><i/>NASA SPACECRAFT ARCHIVE</p><h2>Machines built<br/><span>to cross the impossible.</span></h2><p>Four spacecraft, four radically different ways of extending human reach.</p><a href="/spacecraft">Explore the fleet →</a></div><div className="spacecraft-grid">{nasaSpacecraft.map((craft,i)=><a href="/spacecraft" className="spacecraft-card" data-side={i%2?"right":"left"} key={craft.name}><small>0{i+1} · {craft.type}</small><img src={craft.image} alt={`Photorealistic 3D render of NASA ${craft.name}`}/><h3>{craft.name}</h3><p>{craft.note}</p></a>)}</div></section>
 
     <section className="galaxy-explorer"><div className="galaxy-sticky"><div className="galaxy-copy"><p className="eyebrow"><i/>GALAXY TYPE · 0{activeGalaxy+1} / 0{galaxyTypes.length}</p><h2 key={galaxyTypes[activeGalaxy].name} className="step-change">{galaxyTypes[activeGalaxy].name}.<br/><span>{galaxyTypes[activeGalaxy].label}.</span></h2><p className="galaxy-fact step-change" key={galaxyTypes[activeGalaxy].fact}>{galaxyTypes[activeGalaxy].fact}</p><div>{galaxyTypes.map((galaxy,i)=><span className={activeGalaxy===i?"active":""} key={galaxy.name}>0{i+1}</span>)}</div></div><img key={activeGalaxy} className={`galaxy-core galaxy-variant-${activeGalaxy}`} src="/object-galaxy-transparent.png" alt={`${galaxyTypes[activeGalaxy].name} galaxy`}/><dl><div><dt>TYPE</dt><dd>{galaxyTypes[activeGalaxy].name}</dd></div><div><dt>TYPICAL SCALE</dt><dd>{galaxyTypes[activeGalaxy].scale}</dd></div></dl></div></section>
 
@@ -231,9 +230,9 @@ export default function Home() {
     </div></section>
 
     <section id="deep-space" className="deep-space"><div className="deep-title gsap-reveal"><p className="eyebrow"><i/>BEYOND THE PLANETS</p><h2>Explore what lives<br/><span>between the light.</span></h2><p className="deep-intro">A closer look at the objects, structures and machines that define our place in space.</p></div>
-      <div className="object-grid" id="signals">{objects.map((item,i)=><Link href={item.href} key={item.name} className={active===i?"active":""} onClick={()=>setActive(i)} onMouseEnter={e=>hover(e,true)} onMouseLeave={e=>hover(e,false)} aria-label={`Explore ${item.name}`}>
+      <div className="object-grid" id="signals">{objects.map((item,i)=><a href={item.href} key={item.name} className={active===i?"active":""} onClick={()=>setActive(i)} onMouseEnter={e=>hover(e,true)} onMouseLeave={e=>hover(e,false)} aria-label={`Explore ${item.name}`}>
         <img className="space-asset" src={item.image} alt={`Photorealistic 3D view of ${item.name}`}/><span className="object-shade"/><div className="object-meta"><small>{String(i+1).padStart(2,"0")} / {item.tag}</small><h3>{item.name}</h3><p>{item.note}</p><b>{item.value}<em>{item.unit}</em></b></div><i>↗</i>
-      </Link>)}</div>
+      </a>)}</div>
       <aside className="signal-detail"><span>LIVE OBJECT</span><b>{objects[active].name}</b><p>Telemetry received · Signal strength 98.7%</p><div><i/></div></aside>
     </section>
 
