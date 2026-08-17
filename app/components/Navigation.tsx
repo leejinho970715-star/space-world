@@ -13,6 +13,8 @@ export default function Navigation(){
       <Link href="/planets" onClick={close}>Planets</Link>
       <Link href="/deep-space" onClick={close}>Deep space</Link>
       <Link href="/orbit-data" onClick={close}>Orbit data</Link>
+      <Link href="/spacecraft" onClick={close}>NASA spacecraft</Link>
+      <Link href="/ar-experience" onClick={close}>AR Experience</Link>
     </nav>
     {open&&<button className="menu-scrim" type="button" aria-label="Close navigation" onClick={close}/>}
   </>;

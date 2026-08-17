@@ -1,4 +1,5 @@
 import SpaceDetail from "../components/SpaceDetail";
+export const dynamic = "force-static";
 const items=[
 {eyebrow:"ORBITAL RESEARCH",title:"International Space Station",intro:"A permanently crewed laboratory circles Earth roughly sixteen times each day.",image:"/satellite-station-transparent.png",facts:[["ALTITUDE","408 km"],["CREW","7 typical"]] as Array<[string,string]>,body:"The ISS supports microgravity research, Earth observation and technology demonstrations across international partner agencies."},
 {eyebrow:"SPACE OBSERVATORY",title:"Hubble Space Telescope",intro:"A 2.4-metre mirror observes the universe above most atmospheric distortion.",image:"/satellite-telescope-transparent.png",facts:[["ALTITUDE","525 km"],["LAUNCHED","1990"]] as Array<[string,string]>,body:"Hubble transformed astronomy through deep-field imaging, precise distance measurements and long-running ultraviolet observations."},
