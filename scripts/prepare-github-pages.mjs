@@ -19,9 +19,13 @@ async function filesIn(directory) {
 for (const file of await filesIn(outputDirectory)) {
   if (!textExtensions.has(extname(file))) continue;
   const source = await readFile(file, "utf8");
-  const prefixed = source
+  let prefixed = source
     .replace(/(["'`])\/(?!\/|space-world(?:\/|["'`]))(?=[A-Za-z0-9_.-])/g, `$1${basePath}/`)
     .replace(/(["'])\/\1/g, `$1${basePath}/$1`);
+  // Vite removes quotes around CSS URLs, so handle those paths explicitly.
+  if (extname(file) === ".css") {
+    prefixed = prefixed.replace(/url\(\/(?!\/|space-world(?:\/|\)))(?=[A-Za-z0-9_.-])/g, `url(${basePath}/`);
+  }
   if (prefixed !== source) await writeFile(file, prefixed);
 }
 

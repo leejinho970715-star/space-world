@@ -122,20 +122,21 @@ export default function Home() {
     const stepIndexes=new Map<HTMLElement,number>();
     steppedSections.forEach(item=>{if(item.element)stepIndexes.set(item.element,0)});
     let heroStep=0,spacecraftStep=0,lastWheelAt=0,smoothFrame=0,asteroidStarted=false,asteroidComplete=false,spacecraftLeaving=false;
-    const isActive=(element:HTMLElement)=>{const rect=element.getBoundingClientRect();return rect.top<=window.innerHeight*.12&&rect.bottom>=window.innerHeight*.88};
+    const isHeroActive=(element:HTMLElement)=>{const rect=element.getBoundingClientRect();return rect.top<=window.innerHeight*.12&&rect.bottom>=window.innerHeight*.88};
+    const isMidActive=(element:HTMLElement)=>{const rect=element.getBoundingClientRect();const midpoint=window.innerHeight*.5;return rect.top<=midpoint&&rect.bottom>=midpoint};
     const alignSection=(element:HTMLElement)=>{const offset=element.getBoundingClientRect().top;if(Math.abs(offset)<=2)return;cancelAnimationFrame(smoothFrame);const from=window.scrollY,target=from+offset,started=performance.now(),duration=620;const tick=(time:number)=>{const progress=Math.min(1,(time-started)/duration),eased=1-Math.pow(1-progress,4);window.scrollTo(0,from+(target-from)*eased);if(progress<1)smoothFrame=requestAnimationFrame(tick)};smoothFrame=requestAnimationFrame(tick)};
     const onWheel=(event:WheelEvent)=>{
       if(Math.abs(event.deltaY)<4)return;
       const direction=event.deltaY>0?1:-1;
       const now=Date.now();
-      if(heroSection&&isActive(heroSection)){
+      if(heroSection&&isHeroActive(heroSection)){
         const waiting=direction>0&&heroStep<8;
         const rewinding=direction<0&&heroStep>0;
         if(waiting||rewinding){event.preventDefault();alignSection(heroSection);if(now-lastWheelAt>300){heroStep=Math.max(0,Math.min(8,heroStep+direction));gsap.to(heroTimeline,{progress:heroStep/8,duration:.45,ease:"power2.out",overwrite:true});lastWheelAt=now}return}
       }
-      if(asteroidSection&&isActive(asteroidSection)&&direction>0&&!asteroidComplete){event.preventDefault();alignSection(asteroidSection);if(!asteroidStarted){asteroidStarted=true;gsap.timeline({onComplete:()=>{asteroidComplete=true;const nextSection=asteroidSection.nextElementSibling as HTMLElement|null;requestAnimationFrame(()=>nextSection?.scrollIntoView({behavior:"smooth",block:"start"}))}}).to(".asteroid-layer",{xPercent:(i)=>i%2?28:-22,yPercent:(i)=>i*8-8,rotation:(i)=>i%2?70:-55,duration:3,ease:"power1.inOut",stagger:.08},0).to(".belt-mascot",{x:-34,y:-24,rotation:-9,duration:3,ease:"sine.inOut"},0)}return}
+      if(asteroidSection&&isMidActive(asteroidSection)&&direction>0&&!asteroidComplete){event.preventDefault();alignSection(asteroidSection);if(!asteroidStarted){asteroidStarted=true;gsap.timeline({onComplete:()=>{asteroidComplete=true;const nextSection=asteroidSection.nextElementSibling as HTMLElement|null;requestAnimationFrame(()=>nextSection?.scrollIntoView({behavior:"smooth",block:"start"}))}}).to(".asteroid-layer",{xPercent:(i)=>i%2?28:-22,yPercent:(i)=>i*8-8,rotation:(i)=>i%2?70:-55,duration:3,ease:"power1.inOut",stagger:.08},0).to(".belt-mascot",{x:-34,y:-24,rotation:-9,duration:3,ease:"sine.inOut"},0)}return}
       const spacecraftGridRect=spacecraftGrid?.getBoundingClientRect();
-      const spacecraftImagesVisible=!!spacecraftGridRect&&spacecraftGridRect.top<=window.innerHeight*.72&&spacecraftGridRect.bottom>=window.innerHeight*.28;
+      const spacecraftImagesVisible=!!spacecraftGridRect&&spacecraftGridRect.top<=window.innerHeight*.5&&spacecraftGridRect.bottom>=window.innerHeight*.5;
       if(spacecraftSection&&spacecraftImagesVisible&&(spacecraftLeaving||(direction>0&&spacecraftStep<8)||(direction<0&&spacecraftStep>0))){
         event.preventDefault();
         if(spacecraftLeaving)return;
@@ -155,7 +156,7 @@ export default function Home() {
         return;
       }
       for(const item of steppedSections){
-        if(!item.element||!isActive(item.element))continue;
+        if(!item.element||!isMidActive(item.element))continue;
         const current=stepIndexes.get(item.element)??0;
         const shouldHold=direction>0?current<item.length-1:current>0;
         if(shouldHold){event.preventDefault();alignSection(item.element);if(now-lastWheelAt>420){const next=Math.max(0,Math.min(item.length-1,current+direction));stepIndexes.set(item.element,next);item.set(next);lastWheelAt=now}return}
@@ -163,21 +164,21 @@ export default function Home() {
     };
     window.addEventListener("wheel",onWheel,{passive:false,capture:true});
     removeWheelSteps=()=>{cancelAnimationFrame(smoothFrame);window.removeEventListener("wheel",onWheel,{capture:true})};
-    gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach(el=>gsap.from(el,{y:80,opacity:0,duration:1.1,scrollTrigger:{trigger:el,start:"top 82%"}}));
-    gsap.utils.toArray<HTMLElement>(".space-asset").forEach((el,i)=>gsap.to(el,{rotation:i%2?18:-18,y:i%2?-45:45,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:1.2}}));
-    gsap.utils.toArray<HTMLElement>(".planet-image").forEach((el,i)=>{gsap.to(el,{rotation:i%2?32:-32,ease:"none",scrollTrigger:{trigger:".planet-scroll",start:"top bottom",end:"bottom top",scrub:.55}});const enter=()=>gsap.to(el,{scale:1.1,duration:.6,ease:"power3.out"});const leave=()=>gsap.to(el,{scale:1,duration:.6,ease:"power3.out"});el.addEventListener("mouseenter",enter);el.addEventListener("mouseleave",leave)});
-    gsap.fromTo(".galaxy-core",{scale:.18,opacity:.3},{scale:1.2,opacity:1,ease:"none",scrollTrigger:{trigger:".galaxy-explorer",start:"top top",end:()=>`+=${sceneDistance()}`,scrub:1}});
+    gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach(el=>gsap.from(el,{y:80,opacity:0,duration:1.1,scrollTrigger:{trigger:el,start:"top 50%"}}));
+    gsap.utils.toArray<HTMLElement>(".space-asset").forEach((el,i)=>gsap.to(el,{rotation:i%2?18:-18,y:i%2?-45:45,ease:"none",scrollTrigger:{trigger:el,start:"top 50%",end:"bottom top",scrub:1.2}}));
+    gsap.utils.toArray<HTMLElement>(".planet-image").forEach((el,i)=>{gsap.to(el,{rotation:i%2?32:-32,ease:"none",scrollTrigger:{trigger:".planet-scroll",start:"top 50%",end:"bottom top",scrub:.55}});const enter=()=>gsap.to(el,{scale:1.1,duration:.6,ease:"power3.out"});const leave=()=>gsap.to(el,{scale:1,duration:.6,ease:"power3.out"});el.addEventListener("mouseenter",enter);el.addEventListener("mouseleave",leave)});
+    gsap.fromTo(".galaxy-core",{scale:.18,opacity:.3},{scale:1.2,opacity:1,ease:"none",scrollTrigger:{trigger:".galaxy-explorer",start:"top 50%",end:()=>`+=${sceneDistance()}`,scrub:1}});
     gsap.to(".galaxy-core",{xPercent:2,rotation:3,duration:9,repeat:-1,yoyo:true,ease:"sine.inOut"});
     gsap.to(".constellation-stage",{x:10,y:-14,duration:6,repeat:-1,yoyo:true,ease:"sine.inOut"});
     gsap.to(".constellation-stage img",{opacity:.76,duration:2.8,repeat:-1,yoyo:true,ease:"sine.inOut"});
     gsap.utils.toArray<HTMLElement>(".weather-icon img").forEach((icon,i)=>gsap.to(icon,{y:i%2?-7:7,rotation:i%2?5:-5,duration:2.8+i*.18,repeat:-1,yoyo:true,ease:"sine.inOut"}));
     gsap.to(".constellation-mascot",{x:14,y:-20,rotation:6,duration:4.2,repeat:-1,yoyo:true,ease:"sine.inOut"});
     gsap.to(".finale-mascot",{y:-24,x:10,rotation:3.5,duration:3.6,repeat:-1,yoyo:true,ease:"sine.inOut"});
-    gsap.fromTo(".finale-mascot-wrap",{xPercent:18,yPercent:12,rotation:7},{xPercent:-5,yPercent:-5,rotation:-4,ease:"none",scrollTrigger:{trigger:".finale",start:"top bottom",end:"bottom bottom",scrub:1.2}});
-    gsap.to(".mini-system",{rotation:120,ease:"none",scrollTrigger:{trigger:".finale",start:"top bottom",end:"bottom bottom",scrub:1.2}});
-    gsap.utils.toArray<HTMLElement>(".guide-transition").forEach((section)=>{const astronaut=section.querySelector(".transition-astronaut"),copy=section.querySelector(".transition-copy"),progress=section.querySelector(".transition-progress i"),dial=section.querySelector(".transition-orbit-dial"),stars=section.querySelectorAll(".transition-star");const tl=gsap.timeline({scrollTrigger:{trigger:section,start:"top top",end:"bottom bottom",scrub:1}});tl.fromTo(astronaut,{xPercent:68,yPercent:18,rotation:11,opacity:0},{xPercent:0,yPercent:0,rotation:0,opacity:1,duration:.34,ease:"power2.out"},0).fromTo(copy,{y:40,opacity:0},{y:0,opacity:1,duration:.24},.08).fromTo(stars,{scale:0,opacity:0},{scale:1,opacity:1,duration:.42,stagger:.035,ease:"back.out(1.8)"},.12).fromTo(dial,{scale:.65,rotation:-45,opacity:0},{scale:1.08,rotation:35,opacity:.7,duration:.78,ease:"none"},.08).fromTo(progress,{scaleX:0},{scaleX:1,duration:1,ease:"none"},0).to(copy,{y:-25,opacity:0,duration:.18},.8).to(stars,{y:-28,opacity:.18,duration:.24,stagger:.02},.74).to(astronaut,{xPercent:-105,yPercent:-12,rotation:-7,opacity:.12,duration:.3,ease:"power1.in"},.72)});
-    gsap.to(".orbit-earth",{rotation:70,ease:"none",scrollTrigger:{trigger:".satellite-orbit",start:"top top",end:()=>`+=${sceneDistance()}`,scrub:1.2}});
-    gsap.utils.toArray<HTMLElement>(".journey-step").forEach((el,i)=>gsap.from(el,{y:45,opacity:0,duration:.7,delay:i*.05,scrollTrigger:{trigger:el,start:"top 88%"}}));
+    gsap.fromTo(".finale-mascot-wrap",{xPercent:18,yPercent:12,rotation:7},{xPercent:-5,yPercent:-5,rotation:-4,ease:"none",scrollTrigger:{trigger:".finale",start:"top 50%",end:"bottom top",scrub:1.2}});
+    gsap.to(".mini-system",{rotation:120,ease:"none",scrollTrigger:{trigger:".finale",start:"top 50%",end:"bottom top",scrub:1.2}});
+    gsap.utils.toArray<HTMLElement>(".guide-transition").forEach((section)=>{const astronaut=section.querySelector(".transition-astronaut"),copy=section.querySelector(".transition-copy"),progress=section.querySelector(".transition-progress i"),dial=section.querySelector(".transition-orbit-dial"),stars=section.querySelectorAll(".transition-star");const tl=gsap.timeline({scrollTrigger:{trigger:section,start:"top 50%",end:"bottom 50%",scrub:1}});tl.fromTo(astronaut,{xPercent:68,yPercent:18,rotation:11,opacity:0},{xPercent:0,yPercent:0,rotation:0,opacity:1,duration:.34,ease:"power2.out"},0).fromTo(copy,{y:40,opacity:0},{y:0,opacity:1,duration:.24},.08).fromTo(stars,{scale:0,opacity:0},{scale:1,opacity:1,duration:.42,stagger:.035,ease:"back.out(1.8)"},.12).fromTo(dial,{scale:.65,rotation:-45,opacity:0},{scale:1.08,rotation:35,opacity:.7,duration:.78,ease:"none"},.08).fromTo(progress,{scaleX:0},{scaleX:1,duration:1,ease:"none"},0).to(copy,{y:-25,opacity:0,duration:.18},.8).to(stars,{y:-28,opacity:.18,duration:.24,stagger:.02},.74).to(astronaut,{xPercent:-105,yPercent:-12,rotation:-7,opacity:.12,duration:.3,ease:"power1.in"},.72)});
+    gsap.to(".orbit-earth",{rotation:70,ease:"none",scrollTrigger:{trigger:".satellite-orbit",start:"top 50%",end:()=>`+=${sceneDistance()}`,scrub:1.2}});
+    gsap.utils.toArray<HTMLElement>(".journey-step").forEach((el,i)=>gsap.from(el,{y:45,opacity:0,duration:.7,delay:i*.05,scrollTrigger:{trigger:el,start:"top 50%"}}));
     animateContent(root.current!);
     Promise.all([...document.images].map(image=>image.complete?Promise.resolve():new Promise<void>(resolve=>{image.addEventListener("load",()=>resolve(),{once:true});image.addEventListener("error",()=>resolve(),{once:true})}))).then(()=>{ScrollTrigger.sort();ScrollTrigger.refresh()});
   },root);return()=>{removeWheelSteps();ctx.revert()}},[]);

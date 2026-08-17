@@ -11,7 +11,7 @@ export default function SpaceDetail({section,title,lede,items}:{section:string;t
  const root=useRef<HTMLElement>(null);
  useLayoutEffect(()=>{gsap.registerPlugin(ScrollTrigger);const ctx=gsap.context(()=>{
    gsap.from(".sub-hero>*",{y:70,opacity:0,duration:1.1,stagger:.12,ease:"power3.out"});
-   gsap.utils.toArray<HTMLElement>(".detail-row").forEach((row,i)=>{const asset=row.querySelector(".detail-asset");gsap.from(row.querySelector(".detail-copy"),{x:i%2?80:-80,opacity:0,duration:1,scrollTrigger:{trigger:row,start:"top 72%"}});gsap.to(asset,{rotation:i%2?28:-28,yPercent:i%2?-12:12,ease:"none",scrollTrigger:{trigger:row,start:"top bottom",end:"bottom top",scrub:1.1}})});
+   gsap.utils.toArray<HTMLElement>(".detail-row").forEach((row,i)=>{const asset=row.querySelector(".detail-asset");gsap.from(row.querySelector(".detail-copy"),{x:i%2?80:-80,opacity:0,duration:1,scrollTrigger:{trigger:row,start:"top 50%"}});gsap.to(asset,{rotation:i%2?28:-28,yPercent:i%2?-12:12,ease:"none",scrollTrigger:{trigger:row,start:"top 50%",end:"bottom top",scrub:1.1}})});
    gsap.utils.toArray<HTMLElement>(".detail-visual").forEach((visual,i)=>gsap.to(visual,{y:i%2?-10:10,rotation:i%2?-.35:.35,duration:3.8+i*.35,repeat:-1,yoyo:true,ease:"sine.inOut"}));
    animateContent(root.current!);
  },root);return()=>ctx.revert()},[]);
