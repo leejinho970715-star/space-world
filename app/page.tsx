@@ -113,6 +113,12 @@ export default function Home() {
     const spacecraftTimeline=gsap.timeline({paused:true}).fromTo(".spacecraft-card",
       {scale:.08,y:140,z:-900,opacity:.38,rotation:(i,target)=>target.dataset.side==="left"?-10:10,filter:"blur(1.8px)"},
       {scale:1,y:0,z:0,opacity:1,rotation:0,filter:"blur(0px)",duration:1,stagger:.12,ease:"power2.out"},0);
+    const isTouchViewport=window.matchMedia("(max-width: 800px), (pointer: coarse)").matches;
+    if(isTouchViewport){
+      heroTimeline.progress(.16);
+      if(heroSection)ScrollTrigger.create({trigger:heroSection,start:"top top",end:"bottom top",scrub:.7,onUpdate:self=>heroTimeline.progress(.16+self.progress*.84)});
+      if(spacecraftGrid)ScrollTrigger.create({trigger:spacecraftGrid,start:"top 70%",end:"bottom 55%",scrub:.8,onUpdate:self=>spacecraftTimeline.progress(self.progress)});
+    }
     const steppedSections=[
       {element:document.querySelector<HTMLElement>(".galaxy-explorer"),length:galaxyTypes.length,set:setActiveGalaxy},
       {element:document.querySelector<HTMLElement>(".constellation-explorer"),length:constellations.length,set:setActiveConstellation},
@@ -162,8 +168,8 @@ export default function Home() {
         if(shouldHold){event.preventDefault();alignSection(item.element);if(now-lastWheelAt>420){const next=Math.max(0,Math.min(item.length-1,current+direction));stepIndexes.set(item.element,next);item.set(next);lastWheelAt=now}return}
       }
     };
-    window.addEventListener("wheel",onWheel,{passive:false,capture:true});
-    removeWheelSteps=()=>{cancelAnimationFrame(smoothFrame);window.removeEventListener("wheel",onWheel,{capture:true})};
+    if(!isTouchViewport)window.addEventListener("wheel",onWheel,{passive:false,capture:true});
+    removeWheelSteps=()=>{cancelAnimationFrame(smoothFrame);if(!isTouchViewport)window.removeEventListener("wheel",onWheel,{capture:true})};
     gsap.utils.toArray<HTMLElement>(".gsap-reveal").forEach(el=>gsap.from(el,{y:80,opacity:0,duration:1.1,scrollTrigger:{trigger:el,start:"top 50%"}}));
     gsap.utils.toArray<HTMLElement>(".space-asset").forEach((el,i)=>gsap.to(el,{rotation:i%2?18:-18,y:i%2?-45:45,ease:"none",scrollTrigger:{trigger:el,start:"top 50%",end:"bottom top",scrub:1.2}}));
     gsap.utils.toArray<HTMLElement>(".planet-image").forEach((el,i)=>{gsap.to(el,{rotation:i%2?32:-32,ease:"none",scrollTrigger:{trigger:".planet-scroll",start:"top 50%",end:"bottom top",scrub:.55}});const enter=()=>gsap.to(el,{scale:1.1,duration:.6,ease:"power3.out"});const leave=()=>gsap.to(el,{scale:1,duration:.6,ease:"power3.out"});el.addEventListener("mouseenter",enter);el.addEventListener("mouseleave",leave)});
