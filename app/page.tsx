@@ -127,20 +127,21 @@ export default function Home() {
     ];
     const stepIndexes=new Map<HTMLElement,number>();
     steppedSections.forEach(item=>{if(item.element)stepIndexes.set(item.element,0)});
-    let heroStep=0,spacecraftStep=0,lastWheelAt=0,smoothFrame=0,asteroidStarted=false,asteroidComplete=false,spacecraftLeaving=false;
+    let heroStep=0,spacecraftStep=0,lastWheelAt=0,smoothFrame=0,aligningElement:HTMLElement|null=null,asteroidStarted=false,asteroidComplete=false,spacecraftLeaving=false;
     const isHeroActive=(element:HTMLElement)=>{const rect=element.getBoundingClientRect();return rect.top<=window.innerHeight*.12&&rect.bottom>=window.innerHeight*.88};
     const isMidActive=(element:HTMLElement)=>{const rect=element.getBoundingClientRect();const midpoint=window.innerHeight*.5;return rect.top<=midpoint&&rect.bottom>=midpoint};
-    const alignSection=(element:HTMLElement)=>{const offset=element.getBoundingClientRect().top;if(Math.abs(offset)<=2)return;cancelAnimationFrame(smoothFrame);const from=window.scrollY,target=from+offset,started=performance.now(),duration=620;const tick=(time:number)=>{const progress=Math.min(1,(time-started)/duration),eased=1-Math.pow(1-progress,4);window.scrollTo(0,from+(target-from)*eased);if(progress<1)smoothFrame=requestAnimationFrame(tick)};smoothFrame=requestAnimationFrame(tick)};
+    const alignSection=(element:HTMLElement)=>{if(aligningElement)return;const offset=element.getBoundingClientRect().top;if(Math.abs(offset)<=2)return;const from=window.scrollY,target=Math.max(0,from+offset),started=performance.now(),duration=620;aligningElement=element;const tick=(time:number)=>{const progress=Math.min(1,(time-started)/duration),eased=1-Math.pow(1-progress,4);window.scrollTo({top:from+(target-from)*eased,behavior:"auto"});if(progress<1)smoothFrame=requestAnimationFrame(tick);else{aligningElement=null;ScrollTrigger.update()}};smoothFrame=requestAnimationFrame(tick)};
     const onWheel=(event:WheelEvent)=>{
       if(Math.abs(event.deltaY)<4)return;
       const direction=event.deltaY>0?1:-1;
       const now=Date.now();
+      if(aligningElement){event.preventDefault();return}
       if(heroSection&&isHeroActive(heroSection)){
         const waiting=direction>0&&heroStep<8;
         const rewinding=direction<0&&heroStep>0;
         if(waiting||rewinding){event.preventDefault();alignSection(heroSection);if(now-lastWheelAt>300){heroStep=Math.max(0,Math.min(8,heroStep+direction));gsap.to(heroTimeline,{progress:heroStep/8,duration:.45,ease:"power2.out",overwrite:true});lastWheelAt=now}return}
       }
-      if(asteroidSection&&isMidActive(asteroidSection)&&direction>0&&!asteroidComplete){event.preventDefault();alignSection(asteroidSection);if(!asteroidStarted){asteroidStarted=true;gsap.timeline({onComplete:()=>{asteroidComplete=true;const nextSection=asteroidSection.nextElementSibling as HTMLElement|null;requestAnimationFrame(()=>nextSection?.scrollIntoView({behavior:"smooth",block:"start"}))}}).to(".asteroid-layer",{xPercent:(i)=>i%2?28:-22,yPercent:(i)=>i*8-8,rotation:(i)=>i%2?70:-55,duration:3,ease:"power1.inOut",stagger:.08},0).to(".belt-mascot",{x:-34,y:-24,rotation:-9,duration:3,ease:"sine.inOut"},0)}return}
+      if(asteroidSection&&isMidActive(asteroidSection)&&direction>0&&!asteroidComplete){event.preventDefault();alignSection(asteroidSection);if(!asteroidStarted){asteroidStarted=true;gsap.timeline({onComplete:()=>{asteroidComplete=true;const nextSection=asteroidSection.nextElementSibling as HTMLElement|null;if(nextSection)requestAnimationFrame(()=>alignSection(nextSection))}}).to(".asteroid-layer",{xPercent:(i)=>i%2?28:-22,yPercent:(i)=>i*8-8,rotation:(i)=>i%2?70:-55,duration:3,ease:"power1.inOut",stagger:.08},0).to(".belt-mascot",{x:-34,y:-24,rotation:-9,duration:3,ease:"sine.inOut"},0)}return}
       const spacecraftGridRect=spacecraftGrid?.getBoundingClientRect();
       const spacecraftImagesVisible=!!spacecraftGridRect&&spacecraftGridRect.top<=window.innerHeight*.5&&spacecraftGridRect.bottom>=window.innerHeight*.5;
       if(spacecraftSection&&spacecraftImagesVisible&&(spacecraftLeaving||(direction>0&&spacecraftStep<8)||(direction<0&&spacecraftStep>0))){
@@ -154,7 +155,7 @@ export default function Home() {
           gsap.to(spacecraftTimeline,{progress:next/8,duration:.55,ease:"power2.out",overwrite:true,onComplete:()=>{
             if(!completed)return;
             const nextSection=spacecraftSection.nextElementSibling as HTMLElement|null;
-            requestAnimationFrame(()=>nextSection?.scrollIntoView({behavior:"smooth",block:"start"}));
+            if(nextSection)requestAnimationFrame(()=>alignSection(nextSection));
             window.setTimeout(()=>{spacecraftLeaving=false},900);
           }});
           lastWheelAt=now;
