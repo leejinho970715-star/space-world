@@ -20,7 +20,7 @@ for (const file of await filesIn(outputDirectory)) {
   if (!textExtensions.has(extname(file))) continue;
   const source = await readFile(file, "utf8");
   const prefixed = source
-    .replace(/(["'`(=:])\/(?!\/|space-world(?:\/|["'`]))(?=[A-Za-z0-9_.-])/g, `$1${basePath}/`)
+    .replace(/(["'`])\/(?!\/|space-world(?:\/|["'`]))(?=[A-Za-z0-9_.-])/g, `$1${basePath}/`)
     .replace(/(["'])\/\1/g, `$1${basePath}/$1`);
   if (prefixed !== source) await writeFile(file, prefixed);
 }

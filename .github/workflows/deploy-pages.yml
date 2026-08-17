@@ -41,6 +41,10 @@ jobs:
       - name: Prepare repository base path
         run: node scripts/prepare-github-pages.mjs
 
+      - name: Validate generated JavaScript
+        shell: bash
+        run: find dist/client -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
