@@ -247,3 +247,26 @@ html{scroll-behavior:auto!important}
 @media(max-width:1100px){.journey-log>div{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:800px){.journey-log>div{grid-template-columns:1fr 1fr}.journey-step{min-height:210px}.journey-step>img{width:104px;height:104px}.journey-step>span{font-size:15px}}
 @media(max-width:460px){.journey-log>div{grid-template-columns:1fr}.journey-step{min-height:190px}.journey-step>img{width:116px;height:116px}}
+
+/* Keep count-up telemetry prominent and consistent across chapters. */
+.altimeter b,.planet-index,.planet-copy dd,.object-meta>b,.signal-detail strong,.galaxy-sticky dd,.satellite-copy dd,.weather-grid strong,.journey-step>b,.detail-copy dd,.detail-visual>span{font-size:clamp(2rem,2.8vw,2.5rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.signal-detail strong{display:inline-block;margin-left:.25em;color:#fff;font-weight:650}
+
+/* Planet navigation belongs to the heading, with its status in the same row. */
+.planet-heading-actions{display:flex;align-items:center;gap:16px;margin:20px 0 14px}
+.planet-heading-actions .planet-panorama-controls,.planet-heading-actions .planet-panorama-index{position:static!important;inset:auto!important}
+.planet-heading-actions .planet-panorama-index{min-width:0;margin-left:4px;padding:0;background:transparent;backdrop-filter:none}
+.planet-heading-actions .planet-panorama-index b{font-size:2rem}
+
+@media(max-width:800px){
+  .planet-scroll .section-head{left:20px;right:20px;top:8vh;width:auto}
+  .planet-scroll .section-head h2{margin-bottom:10px;font-size:clamp(36px,11vw,44px);line-height:1.08}
+  .planet-heading-actions{margin:12px 0 8px;gap:12px}
+  .planet-heading-actions .planet-panorama-controls{display:flex;gap:8px}
+  .planet-heading-actions .planet-panorama-controls button{width:42px;height:42px}
+  .planet-heading-actions .planet-panorama-index{display:flex;justify-content:flex-start;padding:0}
+  .planet-heading-actions .planet-panorama-index b{font-size:1.75rem}
+  .planet-heading-actions .planet-panorama-index small{max-width:64px}
+  .planet-scroll .panorama-planet,.planet-scroll .planet-sticky:after{top:69%!important}
+  .panorama-planet .planet-image{width:min(58vw,300px)!important;height:min(58vw,300px)!important}
+}
