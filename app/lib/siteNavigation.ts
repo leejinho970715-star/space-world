@@ -8,10 +8,10 @@ export const exploreNavigation = [
 ] as const;
 
 export const explorerNavigation = [
-  { href: "/app", label: "View App", featured: true },
-  { href: "/my-space", label: "My Page" },
-  { href: "/login", label: "Log In" },
-  { href: "/signup", label: "Sign Up" },
+  { href: "/app", label: "View App", action: true, featured: true },
+  { href: "/my-space", label: "My Page", action: true },
+  { href: "/login", label: "Log In", action: true },
+  { href: "/signup", label: "Sign Up", action: true },
 ] as const;
 
 export const siteNavigation = [...exploreNavigation, ...explorerNavigation];
