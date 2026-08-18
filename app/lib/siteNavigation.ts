@@ -4,6 +4,8 @@ export const exploreNavigation = [
   { href: "/deep-space", label: "Deep Space" },
   { href: "/orbit-data", label: "Orbit Data" },
   { href: "/spacecraft", label: "Spacecraft" },
+  { href: "/cosmic-archive", label: "Cosmic Archive" },
+  { href: "/near-earth", label: "Near Earth" },
   { href: "/ar-experience", label: "AR Experience" },
 ] as const;
 
