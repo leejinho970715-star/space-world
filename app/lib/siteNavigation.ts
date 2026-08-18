@@ -16,4 +16,4 @@ export const explorerNavigation = [
   { href: "/signup", label: "Sign Up", action: true },
 ] as const;
 
-export const siteNavigation = [...exploreNavigation, ...explorerNavigation];
+export const siteNavigation = [...explorerNavigation, ...exploreNavigation];

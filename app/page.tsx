@@ -114,6 +114,8 @@ export default function Home() {
   const [guideOpen,setGuideOpen]=useState(true), [active,setActive]=useState(0);
   const [activeConstellation,setActiveConstellation]=useState(0),[activeSatellite,setActiveSatellite]=useState(0),[activeGalaxy,setActiveGalaxy]=useState(0),[activePlanet,setActivePlanet]=useState(0);
   const [chatInput,setChatInput]=useState(""),[chatMessages,setChatMessages]=useState([{from:"mio",text:"Hi, I’m Mio. Ask me anything about this journey."}]);
+  const [showTop,setShowTop]=useState(false);
+  useLayoutEffect(()=>{const onScroll=()=>setShowTop(window.scrollY>window.innerHeight*.6);onScroll();window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll)},[]);
   useLayoutEffect(()=>{gsap.registerPlugin(ScrollTrigger);let removeWheelSteps=()=>{};const ctx=gsap.context(()=>{
     document.querySelectorAll<HTMLElement>("main > .planet-scroll").forEach((section,index)=>{if(index>0)section.remove()});
     const sceneDistance=()=>Math.max(2600,window.innerHeight*5);
@@ -237,7 +239,7 @@ export default function Home() {
 
     <section className="asteroid-belt" id="asteroids"><div className="cinematic-sticky"><div className="belt-copy gsap-reveal"><p className="eyebrow"><i/>REGION 02 · ASTEROID BELT</p><h2>Through the<br/><span>ancient debris.</span></h2><p>Fragments left behind 4.6 billion years ago move on separate planes and at separate speeds.</p></div>
       {[0,1,2].map(layer=><div className={`asteroid-layer layer-${layer}`} key={layer}>{[0,1,2,3].map((_,i)=><img key={i} src="/object-asteroid-transparent.png" alt="" style={{left:`${8+i*27-(layer*4)}%`,top:`${14+((i+layer)%3)*27}%`,width:`${130+layer*70}px`}}/>)}</div>)}
-      <div className="asteroid-index">{asteroidNames.map((name,i)=><a href="/deep-space" key={name} aria-label={`Explore ${name}`}><span>0{i+1}</span><b>{name}</b><small>{i===0?"Dwarf planet":i===1?"Brightest asteroid":i===2?"High-inclination orbit":"Carbon-rich body"}</small></a>)}</div>
+      <div className="asteroid-index">{asteroidNames.map((name,i)=><a href="/deep-space" key={name} className={`asteroid-index-item tone-${i}`} aria-label={`Explore ${name}`}><img className="asteroid-thumb" src="/object-asteroid-transparent.png" alt="" aria-hidden="true"/><span>0{i+1}</span><b>{name}</b><small>{i===0?"Dwarf planet":i===1?"Brightest asteroid":i===2?"High-inclination orbit":"Carbon-rich body"}</small></a>)}</div>
       <img className="belt-mascot" src="/astronaut-flight.png" alt="Mio flying through the asteroid belt"/></div>
     </section>
 
@@ -265,6 +267,10 @@ export default function Home() {
 
     <section className="journey-log"><p className="eyebrow"><i/>YOUR FLIGHT LOG</p><div>{flightLog.map((step,i)=><a className="journey-step" href={step.href} key={step.name} aria-label={`Explore ${step.name}`}><b>0{i+1}</b><img src={step.image} alt=""/><span>{step.name}</span><i aria-hidden="true">→</i></a>)}</div></section>
     <section className="finale"><div className="final-orbit mini-system" aria-hidden="true"><img className="mini-sun" src="/sun-3d-transparent.png" alt=""/><span className="mini-orbit orbit-a"><img src="/planet-mercury-transparent.png" alt=""/></span><span className="mini-orbit orbit-b"><img src="/planet-earth-transparent.png" alt=""/></span><span className="mini-orbit orbit-c"><img src="/planet-mars-transparent.png" alt=""/></span><span className="mini-orbit orbit-d"><img src="/planet-neptune-transparent.png" alt=""/></span></div><div className="finale-mascot-wrap"><img className="finale-mascot" src="/astronaut-complete.png" alt="Mio celebrating the completed journey"/></div><div><p className="eyebrow"><i/>EXPLORATION COMPLETE</p><h2>You crossed<br/><span>the known universe.</span></h2><div className="final-actions"><a href="#top">Explore again <span>↑</span></a><a href="/my-space">My space <span>→</span></a></div></div></section>
+    <button type="button" className={`scroll-top-btn ${showTop?"visible":""}`} onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} aria-label="Scroll to top" aria-hidden={!showTop} tabIndex={showTop?0:-1}>
+      <img src="/planet-earth-transparent.png" alt="" />
+      <span>TOP</span>
+    </button>
     <aside className={`mascot-guide ${guideOpen?"open":""}`}><button className="mascot-trigger" onClick={()=>setGuideOpen(!guideOpen)} aria-label={guideOpen?"Close Mio chatbot":"Open Mio chatbot"}><img src="/astronaut.png" alt=""/></button>{guideOpen&&<div className="mio-chat"><button className="chat-close" onClick={()=>setGuideOpen(false)} aria-label="Close chatbot">×</button><b>MIO / SPACE GUIDE</b><div className="chat-log" aria-live="polite">{chatMessages.map((message,i)=><p className={message.from} key={i}>{message.text}</p>)}</div><small className="chat-suggestions-title">QUICK QUESTIONS · {String(chatSuggestions.length).padStart(2,"0")}</small><div className="chat-suggestions">{chatSuggestions.map(item=><button type="button" onClick={()=>askMio(item.question)} key={item.label}>{item.label}</button>)}</div><form onSubmit={e=>{e.preventDefault();askMio(chatInput)}}><input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Ask Mio about space…" aria-label="Message Mio"/><button type="submit" aria-label="Send message">→</button></form></div>}</aside>
     <SiteFooter/>
   </main>;

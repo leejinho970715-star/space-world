@@ -250,7 +250,7 @@ html{scroll-behavior:auto!important}
 
 /* Keep count-up telemetry prominent and consistent across chapters. */
 .altimeter b,.planet-index,.planet-copy dd,.object-meta>b,.signal-detail strong,.galaxy-sticky dd,.satellite-copy dd,.weather-grid strong,.journey-step>b,.detail-copy dd,.detail-visual>span{font-size:clamp(2rem,2.8vw,2.5rem);line-height:1.1;font-variant-numeric:tabular-nums}
-.signal-detail strong{display:inline-block;margin-left:.25em;color:#fff;font-weight:650}
+.signal-detail strong{display:inline-block;margin-left:.6em;color:#fff;font-weight:650}
 
 /* Cursor-tracked optical lens for every detail object. */
 .magnifier-visual{--lens-x:50%;--lens-y:50%;cursor:crosshair;isolation:isolate;outline:none}.magnifier-visual:focus-visible{outline:1px solid rgba(150,184,255,.72);outline-offset:-1px}.magnifier-crop{position:absolute;z-index:4;inset:0;pointer-events:none;clip-path:circle(0 at var(--lens-x) var(--lens-y));background:rgba(8,17,38,.16);backdrop-filter:brightness(1.12) saturate(1.18);transition:clip-path .28s cubic-bezier(.2,.8,.2,1)}.magnifier-crop img{position:absolute;left:5%;top:5%;width:90%;height:90%;object-fit:contain;filter:drop-shadow(0 32px 50px rgba(0,0,0,.55));transform:scale(1.8);transform-origin:var(--lens-x) var(--lens-y);will-change:transform}.magnifier-ring{position:absolute;z-index:5;left:var(--lens-x);top:var(--lens-y);width:184px;height:184px;border:1px solid rgba(206,224,255,.86);border-radius:50%;background:radial-gradient(circle,transparent 62%,rgba(104,151,255,.09));box-shadow:0 0 0 1px rgba(85,132,232,.18),0 18px 55px rgba(0,0,0,.36),inset 0 0 28px rgba(99,148,255,.12);pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.72);transition:opacity .2s,transform .28s cubic-bezier(.2,.8,.2,1)}.magnifier-ring:before,.magnifier-ring:after{content:"";position:absolute;background:rgba(220,232,255,.82)}.magnifier-ring:before{left:-7px;right:-7px;top:50%;height:1px}.magnifier-ring:after{top:-7px;bottom:-7px;left:50%;width:1px}.magnifier-hint{position:absolute;z-index:6;right:20px;bottom:20px;color:#8192af;font-size:8px;letter-spacing:.15em;pointer-events:none;transition:opacity .2s}.magnifier-visual.is-magnifying .magnifier-crop{clip-path:circle(92px at var(--lens-x) var(--lens-y))}.magnifier-visual.is-magnifying .magnifier-ring{opacity:1;transform:translate(-50%,-50%) scale(1)}.magnifier-visual.is-magnifying .magnifier-hint{opacity:0}
@@ -371,3 +371,87 @@ main.exhibition-page{overflow:hidden!important;background:#05070c!important;colo
 /* Expanded Mio question library. */
 .mio-chat{width:min(460px,calc(100vw - 120px));padding:21px}.chat-log{max-height:225px}.chat-suggestions-title{display:block;margin:15px 0 8px;color:#7189b8;font-size:8px;font-weight:650;letter-spacing:.15em}.chat-suggestions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 13px;max-height:150px;overflow-y:auto;padding-right:3px;scrollbar-width:thin}.chat-suggestions button{min-height:36px;padding:8px 7px;border-radius:9px;white-space:normal;line-height:1.25;text-align:center;transition:background .2s,border-color .2s,transform .2s}.chat-suggestions button:hover,.chat-suggestions button:focus-visible{background:rgba(92,133,221,.28);border-color:rgba(157,188,255,.65);transform:translateY(-1px);outline:none}
 @media(max-width:800px){.mio-chat{width:calc(100vw - 88px);max-height:min(74svh,610px);padding:16px;overflow:hidden}.chat-log{max-height:150px}.chat-suggestions{grid-template-columns:repeat(2,minmax(0,1fr));max-height:142px}.chat-suggestions button{min-height:34px;font-size:9px}.mio-chat form{position:relative}}
+
+/* Mobile planet carousel: anchor the card to the bottom of the sticky stage so the
+   copy block can never be clipped by the sticky's overflow on short viewports. */
+@media(max-width:800px){
+  .planet-scroll{--pl-gap:max(4svh,26px);--pl-img:min(58vw,300px,30svh);--pl-copy:186px}
+  .planet-scroll .section-head{top:5vh}
+  .planet-scroll .section-head h2{margin:12px 0 8px}
+  .planet-scroll .planet-heading-actions{margin:10px 0 6px}
+  .planet-scroll .planet-heading-actions .planet-panorama-controls button{width:40px;height:40px}
+  .planet-scroll .panorama-planet{
+    top:auto!important;bottom:0!important;
+    height:auto!important;
+    padding:0 0 var(--pl-gap)!important;
+    transform-origin:50% 100%!important;
+    transform:translate(-50%,0) translateX(var(--planet-x)) translateZ(var(--planet-z)) scale(var(--planet-scale)) rotateY(var(--planet-angle))!important;
+  }
+  .planet-scroll .panorama-planet .planet-image{width:var(--pl-img)!important;height:var(--pl-img)!important}
+  .planet-scroll .panorama-planet .planet-copy{padding-bottom:2px}
+  .planet-scroll .panorama-planet .planet-copy>span{font-size:12.5px;line-height:1.6}
+  .planet-scroll .panorama-planet .planet-copy dl{margin-top:16px;padding-top:12px;gap:24px}
+  .planet-scroll .planet-sticky:after{
+    top:auto!important;
+    bottom:calc(var(--pl-gap) + var(--pl-copy) + var(--pl-img) / 2)!important;
+    transform:translateY(50%) rotateX(68deg)!important;
+    transform-origin:50% 50%!important;
+  }
+}
+@media(max-width:480px){
+  .planet-scroll{--pl-img:min(56vw,300px,27svh);--pl-copy:180px}
+}
+
+/* Floating "scroll to top" quick menu — a spinning 3D Earth asset. Sits above the
+   Mio mascot trigger so both remain reachable without overlapping. */
+.scroll-top-btn{position:fixed;z-index:79;right:24px;bottom:158px;width:68px;height:68px;padding:0;border:1px solid rgba(158,185,244,.45);border-radius:50%;background:rgba(3,8,20,.72);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(14px) scale(.85);pointer-events:none;transition:opacity .35s ease,transform .35s ease,border-color .25s ease,box-shadow .25s ease;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.scroll-top-btn.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.scroll-top-btn:hover,.scroll-top-btn:focus-visible{border-color:rgba(158,185,244,.9);box-shadow:0 12px 34px rgba(60,110,220,.45);outline:none}
+.scroll-top-btn:hover img,.scroll-top-btn:focus-visible img{animation-play-state:paused;transform:translateY(-2px) scale(1.06)}
+.scroll-top-btn img{width:40px;height:40px;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 6px rgba(110,150,255,.6));animation:scroll-top-spin 9s linear infinite;transition:transform .35s ease}
+.scroll-top-btn span{margin-top:3px;font-size:7px;font-weight:700;letter-spacing:.14em;color:#9fb4e0}
+@keyframes scroll-top-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.scroll-top-btn img{animation:none}}
+@media(max-width:800px){.scroll-top-btn{right:10px;bottom:122px;width:58px;height:58px}.scroll-top-btn img{width:33px;height:33px}.scroll-top-btn span{font-size:6px}}
+
+/* Per-item 3D asteroid art inside each Region 02 index card. Built from the
+   existing photoreal asteroid render (public/object-asteroid-transparent.png),
+   colour-graded per body since no dedicated render exists for Ceres/Vesta/
+   Pallas/Hygiea individually. */
+.asteroid-index-item{position:relative;overflow:hidden}
+.asteroid-thumb{position:absolute;z-index:0;right:-22px;bottom:-24px;width:118px;height:118px;object-fit:contain;opacity:.5;pointer-events:none;filter:drop-shadow(0 14px 20px #000);mask-image:linear-gradient(115deg,transparent 4%,#000 46%);-webkit-mask-image:linear-gradient(115deg,transparent 4%,#000 46%);transition:transform .5s ease,opacity .35s ease}
+.asteroid-index-item:hover .asteroid-thumb,.asteroid-index-item:focus-visible .asteroid-thumb{transform:scale(1.08) rotate(-4deg);opacity:.68}
+.asteroid-index-item>span,.asteroid-index-item>b,.asteroid-index-item>small{position:relative;z-index:1}
+.asteroid-index-item.tone-0 .asteroid-thumb{filter:drop-shadow(0 14px 20px #000) brightness(1.35) saturate(.4) sepia(.12) hue-rotate(155deg)}
+.asteroid-index-item.tone-1 .asteroid-thumb{filter:drop-shadow(0 14px 20px #000) brightness(1.55) saturate(.65) sepia(.28) hue-rotate(8deg)}
+.asteroid-index-item.tone-2 .asteroid-thumb{filter:drop-shadow(0 14px 20px #000) brightness(1.05) saturate(.5) sepia(.1) hue-rotate(200deg)}
+.asteroid-index-item.tone-3 .asteroid-thumb{filter:drop-shadow(0 14px 20px #000) brightness(.72) contrast(1.15) saturate(.2)}
+@media(max-width:800px){.asteroid-thumb{width:88px;height:88px;right:-16px;bottom:-18px}}
+@media(max-width:480px){.asteroid-thumb{width:76px;height:76px}}
+
+/* Desktop (>800px) now also uses the hamburger + slide-in drawer pattern that
+   was previously mobile-only, with 20px link type and matching button sizing
+   inside the drawer. Scoped to min-width:801px so the existing mobile drawer
+   is left exactly as it was. */
+@media(min-width:801px){
+  .menu-toggle{display:grid;position:relative;z-index:72;width:46px;height:46px;place-content:center;gap:5px;border:1px solid #7895cd66;border-radius:10px;background:#071027cc;cursor:pointer}
+  .menu-toggle span{display:block;width:19px;height:1px;background:#eef4ff;transition:transform .3s,opacity .3s}
+  .menu-toggle:hover{border-color:#9db9ff}
+  .menu-toggle.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .menu-toggle.open span:nth-child(2){opacity:0}
+  .menu-toggle.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .menu-scrim{display:block;position:fixed;z-index:68;inset:0;border:0;background:rgba(0,2,8,.68);backdrop-filter:blur(6px);cursor:pointer}
+  .topbar nav{position:fixed;z-index:70;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;overflow-y:auto;gap:0;left:auto;right:0;top:0;bottom:0;width:clamp(320px,32vw,420px);height:100dvh;padding:120px 44px 54px;border:0;border-left:1px solid #7594cc55;border-radius:0;background:radial-gradient(circle at 100% 0,#18366f,#050914 55%);box-shadow:-30px 0 70px #000;transform:translateX(105%);transition:transform .42s cubic-bezier(.2,.8,.2,1);visibility:hidden;margin-left:0;font-size:20px}
+  .topbar nav.menu-open{transform:translateX(0);visibility:visible}
+  .topbar nav a,.topbar nav a:first-child{display:block;padding:20px 0;border-bottom:1px solid var(--line);font-size:20px;font-weight:600;letter-spacing:-.02em;color:#dce5f6;white-space:normal;flex:0 0 auto}
+  .topbar nav a:hover{color:#fff}
+  .topbar nav a:after{content:'\2192';float:right;color:#6f96ff}
+  .topbar nav .nav-action-link,.topbar nav .view-app-link{display:block;margin-bottom:12px;padding:16px 20px;font-size:18px;font-weight:600;text-align:center;border:1px solid rgba(139,174,255,.42);border-radius:12px;background:rgba(52,78,137,.18)}
+  .topbar nav .nav-action-link:after,.topbar nav .view-app-link:after{content:none}
+  .topbar nav .view-app-link{color:#fff;background:rgba(87,126,225,.34);border-color:rgba(157,187,255,.72)}
+  .topbar nav .view-app-link span{margin-left:8px}
+  .topbar nav a:nth-child(4){margin-bottom:34px}
+}
+
+/* Add breathing room between the telemetry text and the signal-strength gauge bar. */
+.signal-detail div{margin-top:16px}
