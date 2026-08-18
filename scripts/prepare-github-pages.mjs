@@ -1,7 +1,8 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 
 const outputDirectory = join(process.cwd(), "dist", "client");
+const prerenderDirectory = join(process.cwd(), "dist", "server", "prerendered-routes");
 const basePath = "/space-world";
 const textExtensions = new Set([".html", ".css", ".js", ".json", ".txt", ".rsc", ".map", ".xml", ".svg"]);
 
@@ -14,6 +15,15 @@ async function filesIn(directory) {
     else files.push(path);
   }
   return files;
+}
+
+// Vinext keeps pre-rendered route documents beside the server build. GitHub
+// Pages only serves the uploaded client directory, so merge those documents
+// into the static artifact before rewriting repository-relative URLs.
+for (const file of await filesIn(prerenderDirectory)) {
+  const destination = join(outputDirectory, relative(prerenderDirectory, file));
+  await mkdir(join(destination, ".."), { recursive: true });
+  await copyFile(file, destination);
 }
 
 for (const file of await filesIn(outputDirectory)) {
