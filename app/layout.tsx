@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteTitle = "Space World — Step Beyond the Known";
-const siteDescription = "Explore planets, asteroids, galaxies, constellations, satellites and NASA spacecraft through an immersive, interactive journey across the universe.";
-const socialImage = "https://leejinho970715-star.github.io/space-world/og.png";
+const siteTitle = "Space World — Explorer App";
+const siteDescription = "Complete a six-stage journey from Earth to Satellites, record every discovery in your Flight Log, and become a Space World explorer.";
+const socialImage = "https://cosmos-ar-explorer.leejinho970715.chatgpt.site/og-app.png";
 
 export const metadata: Metadata = {
   title: siteTitle,
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [{
       url: socialImage,
-      width: 1254,
-      height: 1254,
-      alt: "Space World astronaut exploring a vivid universe",
+      width: 1536,
+      height: 1024,
+      alt: "Space World Explorer App Flight Log journey",
     }],
   },
   twitter: {
