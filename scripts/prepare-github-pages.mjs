@@ -4,6 +4,7 @@ import { extname, join, relative } from "node:path";
 const outputDirectory = join(process.cwd(), "dist", "client");
 const prerenderDirectory = join(process.cwd(), "dist", "server", "prerendered-routes");
 const basePath = "/space-world";
+const appOrigin = "https://cosmos-ar-explorer.leejinho970715.chatgpt.site";
 const textExtensions = new Set([".html", ".css", ".js", ".json", ".txt", ".rsc", ".map", ".xml", ".svg"]);
 
 async function filesIn(directory) {
@@ -30,6 +31,9 @@ for (const file of await filesIn(outputDirectory)) {
   if (!textExtensions.has(extname(file))) continue;
   const source = await readFile(file, "utf8");
   let prefixed = source
+    // Pages cannot run D1-backed/authenticated routes. Send those entry points
+    // to the deployed web app instead of publishing links that resolve to 404.
+    .replace(/(["'`])\/(app|login|signup|my-space)\/?\1/g, `$1${appOrigin}/$2$1`)
     .replace(/(["'`])\/(?!\/|space-world(?:\/|["'`]))(?=[A-Za-z0-9_.-])/g, `$1${basePath}/`)
     .replace(/(["'])\/\1/g, `$1${basePath}/$1`);
   // Vite removes quotes around CSS URLs, so handle those paths explicitly.
