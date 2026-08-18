@@ -352,6 +352,22 @@ main.exhibition-page{overflow:hidden!important;background:#05070c!important;colo
 .constellation-menu{gap:12px}.constellation-menu button{min-height:62px;padding:18px 25px;font-size:16px;font-weight:600;line-height:1.2;letter-spacing:-.01em}.constellation-menu button span{font-size:12px;font-weight:650;margin-right:12px}.constellation-copy>p:last-child{font-size:15px;line-height:1.85}.constellation-fact{font-size:15px!important;line-height:1.8!important;min-height:58px}
 @media(max-width:800px){.constellation-menu{gap:10px}.constellation-menu button{min-height:56px;padding:16px 20px;font-size:14px}.constellation-menu button span{font-size:11px;margin-right:10px}.constellation-fact{font-size:13px!important;min-height:52px}}
 
+/* Keep constellation choices immediately below their chapter title. */
+.constellation-copy .constellation-menu{position:relative;left:auto;right:auto;bottom:auto;width:max-content;max-width:86vw;margin-top:26px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x proximity;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+.constellation-copy .constellation-menu::-webkit-scrollbar{display:none}
+.constellation-copy .constellation-menu button{flex:0 0 auto;scroll-snap-align:start}
+.constellation-copy .constellation-fact{margin-top:24px}
+
+/* Larger satellite introduction copy and roster controls. */
+.satellite-copy{width:570px}
+.satellite-copy>p:not(.eyebrow){max-width:520px;font-size:16px;line-height:1.75;color:#b1bdd1}
+.satellite-roster{margin-top:32px;gap:12px}
+.satellite-roster button{min-height:62px;padding:16px 18px;font-size:12px;font-weight:650;letter-spacing:.03em}
+.satellite-roster button b{margin-left:10px;font-size:16px;line-height:1.2}
+
+@media(max-width:800px){.constellation-copy .constellation-menu{width:calc(100vw - 24px);max-width:none;margin-top:20px;padding:4px 72px 10px 0;touch-action:pan-x}.constellation-copy .constellation-fact{margin-top:16px}.satellite-copy{width:calc(100vw - 48px)}.satellite-copy>p:not(.eyebrow){font-size:14px;line-height:1.7}.satellite-roster{margin-top:24px;gap:10px;max-height:210px}.satellite-roster button{min-height:56px;padding:13px 14px;font-size:11px}.satellite-roster button b{font-size:14px;margin-left:7px}}
+@media(max-width:480px){.constellation-copy .constellation-menu{width:calc(100vw - 18px)}.satellite-copy{width:calc(100vw - 36px)}.satellite-roster button{min-height:54px;padding:12px 11px}.satellite-roster button b{font-size:13px}}
+
 /* Expanded Mio question library. */
 .mio-chat{width:min(460px,calc(100vw - 120px));padding:21px}.chat-log{max-height:225px}.chat-suggestions-title{display:block;margin:15px 0 8px;color:#7189b8;font-size:8px;font-weight:650;letter-spacing:.15em}.chat-suggestions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 13px;max-height:150px;overflow-y:auto;padding-right:3px;scrollbar-width:thin}.chat-suggestions button{min-height:36px;padding:8px 7px;border-radius:9px;white-space:normal;line-height:1.25;text-align:center;transition:background .2s,border-color .2s,transform .2s}.chat-suggestions button:hover,.chat-suggestions button:focus-visible{background:rgba(92,133,221,.28);border-color:rgba(157,188,255,.65);transform:translateY(-1px);outline:none}
 @media(max-width:800px){.mio-chat{width:calc(100vw - 88px);max-height:min(74svh,610px);padding:16px;overflow:hidden}.chat-log{max-height:150px}.chat-suggestions{grid-template-columns:repeat(2,minmax(0,1fr));max-height:142px}.chat-suggestions button{min-height:34px;font-size:9px}.mio-chat form{position:relative}}
